@@ -139,13 +139,26 @@ class Tile(GameObject):
 
         return neighbors
 
-    def is_pathable(self):
+    def is_pathable(self, unit):
         """Checks if a Tile is pathable to units
+        Args:
+            unit (Unit): the Unit that is checking
         Returns:
             bool: True if pathable, False otherwise
         """
         # <<-- Creer-Merge: is_pathable_builtin -->> - Code you add between this comment and the end comment will be preserved between Creer re-runs.
-        return false  # DEVELOPER ADD LOGIC HERE
+        
+        # Don't try to path through units
+        if this.unit:
+            return False
+
+        # Ships can only be on water
+        if unit.ship_health > 0:
+            return this.type == "water"
+
+        # Crew that aren't on ships can only be on land or ports owned by their owner
+        return this.type == "land" or (this.port and this.port.owner == unit.owner)
+        
         # <<-- /Creer-Merge: is_pathable_builtin -->>
 
     def has_neighbor(self, tile):

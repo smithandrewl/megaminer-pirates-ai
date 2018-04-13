@@ -54,11 +54,12 @@ class AI(BaseAI):
         return True
         # <<-- /Creer-Merge: runTurn -->>
 
-    def find_path(self, start, goal):
+    def find_path(self, start, goal, unit):
         """A very basic path finding algorithm (Breadth First Search) that when given a starting Tile, will return a valid path to the goal Tile.
         Args:
             start (Tile): the starting Tile
             goal (Tile): the goal Tile
+            unit (Unit): the Unit that will move
         Returns:
             list[Tile]: A list of Tiles representing the path, the the first element being a valid adjacent Tile to the start, and the last element being the goal.
         """
@@ -96,7 +97,7 @@ class AI(BaseAI):
                 # else we did not find the goal, so enqueue this tile's neighbors to be inspected
 
                 # if the tile exists, has not been explored or added to the fringe yet, and it is pathable
-                if neighbor and neighbor.id not in came_from and neighbor.is_pathable():
+                if neighbor and neighbor.id not in came_from and neighbor.is_pathable(unit):
                     # add it to the tiles to be explored and add where it came from for path reconstruction.
                     fringe.append(neighbor)
                     came_from[neighbor.id] = inspect
