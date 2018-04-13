@@ -149,15 +149,15 @@ class Tile(GameObject):
         # <<-- Creer-Merge: is_pathable_builtin -->> - Code you add between this comment and the end comment will be preserved between Creer re-runs.
         
         # Don't try to path through units
-        if this.unit:
+        if self.unit:
             return False
 
         # Ships can only be on water
         if unit.ship_health > 0:
-            return this.type == "water"
+            return self.type == "water"
 
         # Crew that aren't on ships can only be on land or ports owned by their owner
-        return this.type == "land" or (this.port and this.port.owner == unit.owner)
+        return self.type == "land" or (self.port and self.port.owner == unit.owner)
         
         # <<-- /Creer-Merge: is_pathable_builtin -->>
 
