@@ -6,6 +6,31 @@ from joueur.base_ai import BaseAI
 # you can add additional import(s) here
 # <<-- /Creer-Merge: imports -->>
 
+class EnemyInfo:
+    def __init__(self):
+        self.enemy_ships = []
+        self.enemy_crew = []
+        self.weakest_ship = None
+
+
+    def update(self, game):
+        player = game.current_player
+        enemy = player.opponent
+
+        min_ship_health = 10000
+
+        for unit in enemy.units:
+            if unit.game_object_name == "crew":
+                self.enemy_crew.append(unit)
+
+            if unit.game_object_name == "ship":
+                self.enemy_ships.append(unit)
+                if unit.ship_health < min_ship_health:
+                    min_ship_health = unit.ship_health
+                    self.weakest_ship = unit
+
+
+
 class AI(BaseAI):
     """ The basic AI functions that are the same between games. """
 
@@ -20,6 +45,8 @@ class AI(BaseAI):
         # <<-- /Creer-Merge: get-name -->>
 
     def start(self):
+        self.enemy_info = EnemyInfo()
+
         """ This is called once the game starts and your AI knows its playerID and game. You can initialize your AI here.
         """
         # <<-- Creer-Merge: start -->> - Code you add between this comment and the end comment will be preserved between Creer re-runs.
@@ -51,6 +78,9 @@ class AI(BaseAI):
         """
         # <<-- Creer-Merge: runTurn -->> - Code you add between this comment and the end comment will be preserved between Creer re-runs.
         # Put your game logic here for runTurn
+
+        self.enemy_info.update(self.game)
+
         if len(self.player._units) == 0:
             # Spawn a crew if we have no units
             self.player.port.spawn("crew")
