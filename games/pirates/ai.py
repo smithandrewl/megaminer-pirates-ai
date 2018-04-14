@@ -10,26 +10,36 @@ class EnemyInfo:
     def __init__(self):
         self.enemy_ships = []
         self.enemy_crew = []
-        self.weakest_ship = None
+        self.weakest_unit = None
+        self.ship_count = 0
 
 
     def update(self, game):
+        self.unit_count = 0
+        self.enemy_units = []
+        self.weakest_unit = None
+
         player = game.current_player
         enemy = player.opponent
 
+
+        self.ship_count = len(enemy.units)
+
         min_ship_health = 10000
 
+
         for unit in enemy.units:
-            if unit.game_object_name == "crew":
-                self.enemy_crew.append(unit)
+            print(unit.crew_health)
 
-            if unit.game_object_name == "ship":
-                self.enemy_ships.append(unit)
-                if unit.ship_health < min_ship_health:
-                    min_ship_health = unit.ship_health
-                    self.weakest_ship = unit
+            self.enemy_units.append(unit)
 
+            if unit.ship_health < min_ship_health:
+                min_ship_health = unit.ship_health
+                self.weakest_unit = unit
 
+        self.unit_count = len(self.enemy_ships)
+
+        print("Unit count: {0}".format(self.unit_count))
 
 class AI(BaseAI):
     """ The basic AI functions that are the same between games. """
