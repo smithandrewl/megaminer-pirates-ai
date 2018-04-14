@@ -51,6 +51,52 @@ class AI(BaseAI):
         """
         # <<-- Creer-Merge: runTurn -->> - Code you add between this comment and the end comment will be preserved between Creer re-runs.
         # Put your game logic here for runTurn
+        if len(self.player._units) == 0:
+            # Spawn a crew if we have no units
+            self.player.port.spawn("crew")
+        elif self.player._units[0]._ship_health == 0:
+            # Spawn a ship so our crew can sail
+            self.player.port.spawn("ship")
+        elif self.player._units[0]._ship_health < self.game._ship_health / 2.0:
+            # Heal our unit if the ship is almost dead
+            # Note: Crew also have their own health. Maybe try adding a check to see if the crew need healing?
+            unit = self.player._units[0]
+
+            # Find a path to our port so we can heal
+            path = self.find_path(unit.tile, self.player.port.tile, unit)
+            if len(path) > 0:
+                # Move along the path if there is one
+                unit.move(path[0])
+            else:
+                # Try to deposit any gold we have while we're here
+                unit.deposit()
+
+                # Try to rest
+                unit.rest()
+        else:
+            # Try to attack a merchant
+            unit = self.player._units[0]
+
+            # Look for a merchant ship
+            merchant = None
+            for u in self.game.units:
+                if u._target_port is not None:
+                    # Found one
+                    merchant = u
+                    break
+
+            # If we found a merchant, move to it, then attack it
+            if merchant is not None:
+                # Find a path to this merchant
+                path = self.find_path(unit.tile, merchant.tile, unit)
+                if len(path) > self.game._ship_range:
+                    # Move until we're within firing range of the merchant
+                    # Note: Range is *circular* in pirates, so this can be improved on
+                    unit.move(path[0])
+                else:
+                    # Try to attack the merchant's ship
+                    unit.attack(merchant.tile, "ship")
+
         return True
         # <<-- /Creer-Merge: runTurn -->>
 
