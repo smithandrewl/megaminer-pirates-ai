@@ -76,9 +76,9 @@ class FuzzyVariable:
 
     def defuzzify(self, lowWeight, medWeight, highWeight):
 
-        appliedTotal = (lowWeight * self.low) + (medWeight * med) + (highWeight * self.high)
+        appliedTotal = (lowWeight * self.low) + (medWeight * self.med) + (highWeight * self.high)
 
-        valueTotal = self.low + med + self.high
+        valueTotal = self.low + self.med + self.high
 
         return appliedTotal / valueTotal
 
