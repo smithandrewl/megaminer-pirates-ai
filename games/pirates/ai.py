@@ -80,6 +80,11 @@ class AI(BaseAI):
         # replace with your game updated logic
         # <<-- /Creer-Merge: game-updated -->>
 
+
+    def try_to_spawn_ship(self):
+        if self.player.gold > 2400:
+            self.player.port.spawn("ship")
+
     def end(self, won, reason):
         """ This is called when the game ends, you can clean up your data and dump files here if need be.
 
@@ -119,15 +124,13 @@ class AI(BaseAI):
 
 
         if self.game._current_turn % 100 == 0:
-            if self.player.gold > 2400:
-                self.player.port.spawn("ship")
+            self.try_to_spawn_ship()
         else:
 
             if self.player.port.tile.unit == None:
                 self.player.port.spawn("crew")
             else:
-                if self.player.gold > 2400:
-                    self.player.port.spawn("ship")
+                self.try_to_spawn_ship()
 
 
         for unit in self.player.units:
