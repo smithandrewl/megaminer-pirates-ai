@@ -118,12 +118,14 @@ class AI(BaseAI):
             self.player.port.spawn("ship")
 
         if self.game._current_turn % 2 == 0:
-            if self.player.port.gold > 2400:
+            if self.player.gold > 2400:
                 self.player.port.spawn("ship")
         else:
 
-            if self.player.port.tile.unit != None:
+            if self.player.port.tile.unit == None:
                 self.player.port.spawn("crew")
+            else:
+                self.player.port.spawn("ship")
 
 
         for unit in self.player.units:
@@ -161,7 +163,7 @@ class AI(BaseAI):
                 min_dist = 10000
 
                 for u in self.game.units:
-                    if u._target_port is not None:
+                    if u._target_port is not None and (u.tile is not None):
                         # Found one
                         if dist(unit.tile, u.tile) < min_dist:
                             print("Found candidate ship at ({0},{1})".format(u.tile.x, u.tile.y))
