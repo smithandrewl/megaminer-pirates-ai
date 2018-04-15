@@ -171,7 +171,6 @@ class AI(BaseAI):
                     if u._target_port is not None and (u.tile is not None):
                         # Found one
                         if dist(unit.tile, u.tile) < min_dist:
-                            print("Found candidate ship at ({0},{1})".format(u.tile.x, u.tile.y))
                             min_dist = dist(unit.tile, u.tile)
 
                             merchant = u
@@ -179,22 +178,16 @@ class AI(BaseAI):
 
                 # If we found a merchant, move to it, then attack it
                 if merchant is not None:
-                    print('We found the closest merchant ship at ({0}, {1})!'.format(merchant.tile.x, merchant.tile.y))
 
                     merchant_health = FuzzyVariable("Merchant health",0.0, 0.0, 0.0, 0.0)
                     merchant_gold = FuzzyVariable("Merchant gold", 0.0, 0.0, 0.0, 0.0)
 
-                    print("Merchant gold! {0}".format(merchant.gold))
                     grade(merchant.ship_health, 0, self.game._ship_health, merchant_health )
                     grade(merchant.gold, 0, 1000, merchant_gold)
                     fuzzy_merchant_health_bad = merchant_health.get_low()
                     unit_health_good = health.get_high().fuzzyOr(health.get_med())
 
                     should_attack = fuzzy_merchant_health_bad.fuzzyOr(unit_health_good).fuzzyOr(merchant_gold.get_high()).value
-                    print("merchant_gold.get_high() is {0}".format(merchant_gold.get_high().value))
-                    print("health.get_high() is {0}".format(health.get_high().value))
-                    print("health.get_med() is {0}".format(health.get_med().value))
-                    print("Should attack is {0}%".format(should_attack * 100.0))
 
                     if should_attack > 0.5:
 
