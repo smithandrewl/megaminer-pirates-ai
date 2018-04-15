@@ -117,7 +117,7 @@ class AI(BaseAI):
 
             self.player.port.spawn("ship")
 
-        if self.game._current_turn % 2 == 0:
+        if self.game._current_turn % 20 == 0:
             if self.player.gold > 2400:
                 self.player.port.spawn("ship")
         else:
@@ -144,8 +144,13 @@ class AI(BaseAI):
                 # Find a path to our port so we can heal
                 path = self.find_path(unit.tile, self.player.port.tile, unit)
                 if len(path) > 0:
+                    idx = 0
                     # Move along the path if there is one
-                    unit.move(path[0])
+                    while unit.moves > 0:
+                        if len(path) > idx:
+                            unit.move(path[idx])
+                            break
+                        idx = idx + 1
                 else:
                     # Try to deposit any gold we have while we're here
 
@@ -153,7 +158,7 @@ class AI(BaseAI):
                     unit.deposit()
 
                     # Try to rest
-                unit.rest()
+                    unit.rest()
             else:
                 print("searching for a ship to attack")
 
