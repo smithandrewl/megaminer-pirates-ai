@@ -66,6 +66,7 @@ class AI(BaseAI):
     def start(self):
         self.enemy_info = EnemyInfo()
 
+
         """ This is called once the game starts and your AI knows its playerID and game. You can initialize your AI here.
         """
         # <<-- Creer-Merge: start -->> - Code you add between this comment and the end comment will be preserved between Creer re-runs.
@@ -107,12 +108,23 @@ class AI(BaseAI):
 
         self.enemy_info.update(self.game)
 
+
         if len(self.player._units) == 0:
             # Spawn a crew if we have no units
             self.player.port.spawn("crew")
         elif self.player._units[0]._ship_health == 0:
             # Spawn a ship so our crew can sail
+
             self.player.port.spawn("ship")
+
+        if self.game._current_turn % 2 == 0:
+            if self.player.port.gold > 2400:
+                self.player.port.spawn("ship")
+        else:
+
+            if self.player.port.tile.unit != None:
+                self.player.port.spawn("crew")
+
 
         for unit in self.player.units:
             health = FuzzyVariable("", 0.0, 0.0, 0.0,0.0)
@@ -134,6 +146,8 @@ class AI(BaseAI):
                     unit.move(path[0])
                 else:
                     # Try to deposit any gold we have while we're here
+
+
                     unit.deposit()
 
                     # Try to rest
@@ -176,6 +190,7 @@ class AI(BaseAI):
                     print("Should attack is {0}%".format(should_attack * 100.0))
 
                     if should_attack > 0.5:
+
                         print("We have decided to attack")
                         # Find a path to this merchant
 
@@ -189,6 +204,8 @@ class AI(BaseAI):
                             print("We are in range, attacking the ship!")
                             # Try to attack the merchant's ship
                             unit.attack(merchant.tile, "ship")
+
+
                 else:
                     print("No merchant ship was found :-(")
 
