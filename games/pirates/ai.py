@@ -1,7 +1,7 @@
 # This is where you build your AI for the Pirates game.
 
 from joueur.base_ai import BaseAI
-
+from games.pirates.fuzzy_logic import *
 # <<-- Creer-Merge: imports -->> - Code you add between this comment and the end comment will be preserved between Creer re-runs.
 # you can add additional import(s) here
 # <<-- /Creer-Merge: imports -->>
@@ -97,45 +97,55 @@ class AI(BaseAI):
         elif self.player._units[0]._ship_health == 0:
             # Spawn a ship so our crew can sail
             self.player.port.spawn("ship")
-        elif self.player._units[0]._ship_health < self.game._ship_health / 2.0:
-            # Heal our unit if the ship is almost dead
-            # Note: Crew also have their own health. Maybe try adding a check to see if the crew need healing?
-            unit = self.player._units[0]
 
-            # Find a path to our port so we can heal
-            path = self.find_path(unit.tile, self.player.port.tile, unit)
-            if len(path) > 0:
-                # Move along the path if there is one
-                unit.move(path[0])
-            else:
-                # Try to deposit any gold we have while we're here
-                unit.deposit()
+        for unit in self.player.units:
+            health = FuzzyVariable("", 0, 0, 0)
 
-                # Try to rest
-                unit.rest()
-        else:
-            # Try to attack a merchant
-            unit = self.player._units[0]
+            grade(unit.ship_health, 0, self.game._ship_health / 2.0, health)
 
-            # Look for a merchant ship
-            merchant = None
-            for u in self.game.units:
-                if u._target_port is not None:
-                    # Found one
-                    merchant = u
-                    break
+            
 
-            # If we found a merchant, move to it, then attack it
-            if merchant is not None:
-                # Find a path to this merchant
-                path = self.find_path(unit.tile, merchant.tile, unit)
-                if len(path) > self.game._ship_range:
-                    # Move until we're within firing range of the merchant
-                    # Note: Range is *circular* in pirates, so this can be improved on
+            if unit._ship_health < self.game._ship_health / 2.0:
+                # Heal our unit if the ship is almost dead
+                # Note: Crew also have their own health. Maybe try adding a check to see if the crew need healing?
+
+
+                # Find a path to our port so we can heal
+                path = self.find_path(unit.tile, self.player.port.tile, unit)
+                if len(path) > 0:
+                    # Move along the path if there is one
                     unit.move(path[0])
                 else:
-                    # Try to attack the merchant's ship
-                    unit.attack(merchant.tile, "ship")
+                    # Try to deposit any gold we have while we're here
+                    unit.deposit()
+
+                    # Try to rest
+                unit.rest()
+            else:
+                print("searching for a ship to attack")
+
+                # Look for a merchant ship
+                merchant = None
+                for u in self.game.units:
+                    if u._target_port is not None:
+                        # Found one
+                        merchant = u
+                        break
+
+                # If we found a merchant, move to it, then attack it
+                if merchant is not None:
+                    print('We found a merchant ship!')
+                    # Find a path to this merchant
+                    path = self.find_path(unit.tile, merchant.tile, unit)
+                    if len(path) > self.game._ship_range:
+                        # Move until we're within firing range of the merchant
+                        # Note: Range is *circular* in pirates, so this can be improved on
+                        unit.move(path[0])
+                    else:
+                        # Try to attack the merchant's ship
+                        unit.attack(merchant.tile, "ship")
+                else:
+                    print("No merchant ship was found :-(")
 
         return True
         # <<-- /Creer-Merge: runTurn -->>
