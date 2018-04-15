@@ -161,13 +161,16 @@ class AI(BaseAI):
                     print('We found the closest merchant ship at ({0}, {1})!'.format(merchant.tile.x, merchant.tile.y))
 
                     merchant_health = FuzzyVariable("Merchant health",0.0, 0.0, 0.0, 0.0)
+                    merchant_gold = FuzzyVariable("Merchant gold", 0.0, 0.0, 0.0, 0.0)
 
+                    print("Merchant gold! {0}".format(merchant.gold))
                     grade(merchant.ship_health, 0, self.game._ship_health, merchant_health )
-
+                    grade(merchant.gold, 0, 1000, merchant_gold)
                     fuzzy_merchant_health_bad = merchant_health.get_low()
                     unit_health_good = health.get_high().fuzzyOr(health.get_med())
 
-                    should_attack = fuzzy_merchant_health_bad.fuzzyOr(unit_health_good).value
+                    should_attack = fuzzy_merchant_health_bad.fuzzyOr(unit_health_good).fuzzyOr(merchant_gold.get_high()).value
+                    print("merchant_gold.get_high() is {0}".format(merchant_gold.get_high().value))
                     print("health.get_high() is {0}".format(health.get_high().value))
                     print("health.get_med() is {0}".format(health.get_med().value))
                     print("Should attack is {0}%".format(should_attack * 100.0))
