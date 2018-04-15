@@ -117,7 +117,8 @@ class AI(BaseAI):
 
             self.player.port.spawn("ship")
 
-        if self.game._current_turn % 200 == 0:
+
+        if self.game._current_turn % 100 == 0:
             if self.player.gold > 2400:
                 self.player.port.spawn("ship")
         else:
@@ -125,7 +126,8 @@ class AI(BaseAI):
             if self.player.port.tile.unit == None:
                 self.player.port.spawn("crew")
             else:
-                self.player.port.spawn("ship")
+                if self.player.gold > 2400:
+                    self.player.port.spawn("ship")
 
 
         for unit in self.player.units:
@@ -154,8 +156,8 @@ class AI(BaseAI):
                 else:
                     # Try to deposit any gold we have while we're here
 
-
-                    unit.deposit()
+                    if unit.gold > 0:
+                        unit.deposit()
 
                     # Try to rest
                     unit.rest()
