@@ -2,9 +2,19 @@
 
 from joueur.base_ai import BaseAI
 from games.pirates.fuzzy_logic import *
+import math
+
 # <<-- Creer-Merge: imports -->> - Code you add between this comment and the end comment will be preserved between Creer re-runs.
 # you can add additional import(s) here
 # <<-- /Creer-Merge: imports -->>
+
+def dist(left_tile, right_tile):
+    a = left_tile.x
+    b = left_tile.y
+    c = right_tile.x
+    d = right_tile.y
+
+    return math.fabs(a-c) + math.fabs(b-d)
 
 class EnemyInfo:
     def __init__(self):
@@ -29,7 +39,6 @@ class EnemyInfo:
 
 
         for unit in enemy.units:
-            print(unit.crew_health)
 
             self.enemy_units.append(unit)
 
@@ -39,7 +48,7 @@ class EnemyInfo:
 
         self.unit_count = len(self.enemy_ships)
 
-        print("Unit count: {0}".format(self.unit_count))
+
 
 class AI(BaseAI):
     """ The basic AI functions that are the same between games. """
@@ -91,7 +100,7 @@ class AI(BaseAI):
 
         game_turn = FuzzyVariable("Game turn", 0.0, 0.0, 0.0, 0.0)
 
-        grade(self.game._current_turn, 0.0, 2000.0, game_turn)
+        grade(self.game._current_turn, 0.0, 500.0, game_turn)
 
         early_game = game_turn.get_low()
 
@@ -108,11 +117,12 @@ class AI(BaseAI):
         for unit in self.player.units:
             health = FuzzyVariable("", 0.0, 0.0, 0.0,0.0)
 
-            grade(unit.ship_health, 0.0, self.game._ship_health / 2.0, health)
+            grade(unit.ship_health, 0.0, self.game._ship_health, health)
 
 
 
             if unit._ship_health < self.game._ship_health / 2.0:
+                print("Health is low, heading back")
                 # Heal our unit if the ship is almost dead
                 # Note: Crew also have their own health. Maybe try adding a check to see if the crew need healing?
 
@@ -134,34 +144,46 @@ class AI(BaseAI):
 
                 # Look for a merchant ship
                 merchant = None
+                min_dist = 10000
+
                 for u in self.game.units:
                     if u._target_port is not None:
                         # Found one
-                        merchant = u
+                        if dist(unit.tile, u.tile) < min_dist:
+                            print("Found candidate ship at ({0},{1})".format(u.tile.x, u.tile.y))
+                            min_dist = dist(unit.tile, u.tile)
+
+                            merchant = u
                         break
 
                 # If we found a merchant, move to it, then attack it
                 if merchant is not None:
-                    print('We found a merchant ship!')
+                    print('We found the closest merchant ship at ({0}, {1})!'.format(merchant.tile.x, merchant.tile.y))
 
                     merchant_health = FuzzyVariable("Merchant health",0.0, 0.0, 0.0, 0.0)
 
-                    grade(merchant.ship_health, 0, self.game._ship_health / 2.0, merchant_health )
+                    grade(merchant.ship_health, 0, self.game._ship_health, merchant_health )
 
-                    fuzzy_merchant_health_bad = merchant_health.get_med().fuzzyOr(merchant_health.get_low())
+                    fuzzy_merchant_health_bad = merchant_health.get_low()
                     unit_health_good = health.get_high().fuzzyOr(health.get_med())
 
-                    should_attack = fuzzy_merchant_health_bad.fuzzyAnd(unit_health_good).fuzzyOr(early_game).value
-
+                    should_attack = fuzzy_merchant_health_bad.fuzzyOr(unit_health_good).value
+                    print("health.get_high() is {0}".format(health.get_high().value))
+                    print("health.get_med() is {0}".format(health.get_med().value))
+                    print("Should attack is {0}%".format(should_attack * 100.0))
 
                     if should_attack > 0.5:
+                        print("We have decided to attack")
                         # Find a path to this merchant
+
                         path = self.find_path(unit.tile, merchant.tile, unit)
                         if len(path) > self.game._ship_range:
                             # Move until we're within firing range of the merchant
                             # Note: Range is *circular* in pirates, so this can be improved on
+                            print("Not in range yet, heading closer to the ship")
                             unit.move(path[0])
                         else:
+                            print("We are in range, attacking the ship!")
                             # Try to attack the merchant's ship
                             unit.attack(merchant.tile, "ship")
                 else:

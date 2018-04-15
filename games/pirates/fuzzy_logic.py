@@ -1,3 +1,4 @@
+import math
 def numericGrade(value, lowerLimit, lowerSupportLimit):
     if value < lowerLimit:
         return 0.0
@@ -88,12 +89,11 @@ class FuzzyValue:
 
 
     def fuzzyAnd(self, other):
-        return FuzzyValue(self.value * other.value)
+        return FuzzyValue(min(self.value,other.value))
 
 
     def fuzzyOr(self, other):
-        return FuzzyValue((self.value + other.value) - (self.value - other.value))
-
+        return FuzzyValue(max(self.value, other.value))
 
     def fuzzyNot(self):
         return FuzzyValue(1.0 - self.value)
