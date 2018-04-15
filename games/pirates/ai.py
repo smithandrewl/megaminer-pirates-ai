@@ -117,7 +117,7 @@ class AI(BaseAI):
 
             self.player.port.spawn("ship")
 
-        if self.game._current_turn % 20 == 0:
+        if self.game._current_turn % 200 == 0:
             if self.player.gold > 2400:
                 self.player.port.spawn("ship")
         else:

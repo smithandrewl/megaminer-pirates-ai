@@ -28,8 +28,8 @@
       <file leaf-file-name="ai.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/games/pirates/ai.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="95">
-              <caret line="250" column="16" selection-start-line="250" selection-start-column="16" selection-end-line="250" selection-end-column="16" />
+            <state relative-caret-position="275">
+              <caret line="125" column="46" lean-forward="true" selection-start-line="125" selection-start-column="46" selection-end-line="125" selection-end-column="46" />
               <folding>
                 <element signature="e#57#90#0" expanded="true" />
               </folding>
@@ -72,6 +72,7 @@
       <find>early_game</find>
       <find>ship_gold</find>
       <find>depos</find>
+      <find>%</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -253,8 +254,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/games/pirates/ai.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="95">
-          <caret line="250" column="16" selection-start-line="250" selection-start-column="16" selection-end-line="250" selection-end-column="16" />
+        <state relative-caret-position="275">
+          <caret line="125" column="46" lean-forward="true" selection-start-line="125" selection-start-column="46" selection-end-line="125" selection-end-column="46" />
           <folding>
             <element signature="e#57#90#0" expanded="true" />
           </folding>
