@@ -247,25 +247,26 @@ class AI(BaseAI):
             # the tile we are currently exploring.
             inspect = fringe.pop(0)
 
-            # cycle through the tile's neighbors.
-            for neighbor in inspect.get_neighbors():
-                # if we found the goal, we have the path!
-                if neighbor == goal:
-                    # Follow the path backward to the start from the goal and return it.
-                    path = [goal]
+            if inspect is not None:
+                # cycle through the tile's neighbors.
+                for neighbor in inspect.get_neighbors():
+                    # if we found the goal, we have the path!
+                    if neighbor == goal:
+                        # Follow the path backward to the start from the goal and return it.
+                        path = [goal]
 
-                    # Starting at the tile we are currently at, insert them retracing our steps till we get to the starting tile
-                    while inspect != start:
-                        path.insert(0, inspect)
-                        inspect = came_from[inspect.id]
-                    return path
-                # else we did not find the goal, so enqueue this tile's neighbors to be inspected
+                        # Starting at the tile we are currently at, insert them retracing our steps till we get to the starting tile
+                        while inspect != start:
+                            path.insert(0, inspect)
+                            inspect = came_from[inspect.id]
+                        return path
+                    # else we did not find the goal, so enqueue this tile's neighbors to be inspected
 
-                # if the tile exists, has not been explored or added to the fringe yet, and it is pathable
-                if neighbor and neighbor.id not in came_from and neighbor.is_pathable(unit):
-                    # add it to the tiles to be explored and add where it came from for path reconstruction.
-                    fringe.append(neighbor)
-                    came_from[neighbor.id] = inspect
+                    # if the tile exists, has not been explored or added to the fringe yet, and it is pathable
+                    if neighbor and neighbor.id not in came_from and neighbor.is_pathable(unit):
+                        # add it to the tiles to be explored and add where it came from for path reconstruction.
+                        fringe.append(neighbor)
+                        came_from[neighbor.id] = inspect
 
         # if you're here, that means that there was not a path to get to where you want to go.
         #   in that case, we'll just return an empty path.
