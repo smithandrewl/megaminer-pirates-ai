@@ -138,7 +138,7 @@ class AI(BaseAI):
 
 
 
-            if unit._ship_health < self.game._ship_health / 2.0:
+            if (unit._ship_health < self.game._ship_health / 2.0) or (unit.gold > 600):
                 print("Health is low, heading back")
                 # Heal our unit if the ship is almost dead
                 # Note: Crew also have their own health. Maybe try adding a check to see if the crew need healing?
