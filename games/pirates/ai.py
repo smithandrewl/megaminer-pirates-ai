@@ -82,7 +82,7 @@ class AI(BaseAI):
 
 
     def try_to_spawn_ship(self):
-        if self.player.gold > 2400:
+        if self.player.gold >= 800:
             self.player.port.spawn("ship")
 
     def end(self, won, reason):
@@ -123,12 +123,10 @@ class AI(BaseAI):
             self.player.port.spawn("ship")
 
 
-        if self.game._current_turn % 100 == 0:
-            self.try_to_spawn_ship()
-        else:
-
+        if True:
             if self.player.port.tile.unit == None:
-                self.player.port.spawn("crew")
+                if self.player.gold >= 600:
+                    self.player.port.spawn("crew")
             else:
                 self.try_to_spawn_ship()
 
