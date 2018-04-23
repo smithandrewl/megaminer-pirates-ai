@@ -85,6 +85,11 @@ class AI(BaseAI):
         if self.player.gold >= 800:
             self.player.port.spawn("ship")
 
+    def try_to_spawn_crew(self):
+        if self.player.gold >= 600:
+            self.player.port.spawn("crew")
+
+
     def end(self, won, reason):
         """ This is called when the game ends, you can clean up your data and dump files here if need be.
 
@@ -125,13 +130,14 @@ class AI(BaseAI):
 
         if True:
             if self.player.port.tile.unit == None:
-                if self.player.gold >= 600:
-                    self.player.port.spawn("crew")
+                self.try_to_spawn_crew()
             else:
                 self.try_to_spawn_ship()
 
 
         for unit in self.player.units:
+
+
             health = FuzzyVariable("", 0.0, 0.0, 0.0,0.0)
 
             grade(unit.ship_health, 0.0, self.game._ship_health, health)
