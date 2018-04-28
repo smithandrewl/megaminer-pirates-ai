@@ -154,7 +154,7 @@ class Tile(GameObject):
 
         # Ships can only be on water
         if unit.ship_health > 0:
-            return self.type == "water"
+            return self.type == "water" and (not self.port or self.port.owner == unit.owner)
 
         # Crew that aren't on ships can only be on land or ports owned by their owner
         return self.type == "land" or (self.port and self.port.owner == unit.owner)
